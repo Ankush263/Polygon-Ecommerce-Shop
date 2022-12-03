@@ -7,8 +7,8 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { ethers } from 'ethers';
 
-function NavBarMarket() {
 
+function NavBarMarket() {
   const [walletBalance, getWalletBalance] = useState('')
 
   const getAddress = async () => {
@@ -30,7 +30,6 @@ function NavBarMarket() {
   useEffect(() => {
     getAddress()
   }, [])
-
 
   const styles = {
     navbar: `h-60 flex flex-col`,
