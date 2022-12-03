@@ -13,51 +13,28 @@ function Id() {
 
   let AllOrderIds: any[] = []
   const [myCustomers, setMyCustomers] = useState(AllOrderIds)
-  const [allOrderIds, setAllOrderIds] = useState([])
   const [disable, setDisable] = useState(false)
   const [id, setId] = useState(null)
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const deployAddress = "0xaeBf6b98F358aE5449fABe2Bcb83f1754eE40FdD"
 
-  const customers = async () => {
+  const handleClick = async () => {
     setDisable(true)
     try {
       if(typeof window !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
-        let allMyCustomers = await contract.ShowMyCustomersById(data.id)
-        let allMyOrderIds = await contract.ShowCustomersOrderIdById(data.id)
-        setMyCustomers(allMyCustomers)
-        setAllOrderIds(allMyOrderIds)
-        console.log(allMyOrderIds)
-        console.log("data: ", data)
-        let ID: any = data.id
-        console.log("ID: ", ID)
-        setId(ID)
-      }
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleClick = async () => {
-    try {
-      if(typeof window !== 'undefined') {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
         let allOrderIds = await contract.ShowCustomersOrderIdById(data.id)
-        console.log("allOrderIds: ", allOrderIds)
+        // console.log("allOrderIds: ", allOrderIds)
         allOrderIds.map(async(i: any) => {
           AllOrderIds.push(i.toString())
         })
         setMyCustomers(AllOrderIds)
         let ID: any = data.id
-        console.log("ID: ", ID)
+        // console.log("ID: ", ID)
         setId(ID)
-        console.log("myCustomers: ", AllOrderIds)
+        // console.log("myCustomers: ", AllOrderIds)
       }
     } catch (error) {
       console.log(error)
