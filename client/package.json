@@ -16,10 +16,12 @@
     "axios": "^0.27.2",
     "dotenv": "^16.0.2",
     "ethers": "^5.7.1",
+    "google-maps-react": "^2.0.6",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.6.15"
   },
   "devDependencies": {
     "@types/node": "18.7.15",
