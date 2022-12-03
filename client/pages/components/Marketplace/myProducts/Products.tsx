@@ -3,22 +3,10 @@ import Button from '@mui/material/Button';
 // import ABI from '../../../../../artifacts/contracts/Ecommarce.sol/Ecommarce.json';
 import ABI from '../../../../utils/Ecommarce.json';
 import { ethers } from 'ethers';
-import { GetServerSideProps, GetStaticProps } from 'next';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { GetStaticProps } from 'next';
+import Swal from 'sweetalert2';
 
-// export const getServerSideProps: GetServerSideProps = async(contex) => {
-//   return {
-//     props: {
-//       data: {
-//         img: "https://www.domusweb.it/content/dam/domusweb/en/news/2021/05/13/how-to-mint-your-own-nft-in-5-simple-steps/nft.jpg.foto.rbig.jpg",
-//         productId: 1,
-//         delevered: false,
-//         deliveryStart: "",
-//         deliveryEnd: ""
-//       }
-//     }
-//   }
-// }
+
 export const getStaticProps: GetStaticProps = async(contex) => {
   return {
     revalidate: 5,
@@ -29,6 +17,9 @@ export const getStaticProps: GetStaticProps = async(contex) => {
         delevered: false,
         deliveryStart: "",
         deliveryEnd: ""
+      },
+      Ids: {
+        indexOf: null
       }
     }
   }
@@ -36,7 +27,7 @@ export const getStaticProps: GetStaticProps = async(contex) => {
 
 export default function Products(props: any) {
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const deployAddress = "0xaeBf6b98F358aE5449fABe2Bcb83f1754eE40FdD"
 
   const [click, setClick] = useState(true)
   const [delevered, setDelevered] = useState(false)
@@ -53,10 +44,13 @@ export default function Products(props: any) {
         let currentIndex = props.Ids.indexOf(props.data)
         let transaction = await contract.completeDelivery(orderIds[currentIndex], props.data.productId)
         await transaction.wait()
-        alert('Your Order is delivered to you!!!')
+        Swal.fire(
+          'Order Deliver Successfully😃',
+          `Thank you for shopping with us!!!🤝`,
+          'success'
+        )
         window.location.replace('/components/Marketplace/HomePage')
       }
-        
     } catch (error) {
       console.log(error)
     }
@@ -73,7 +67,11 @@ export default function Products(props: any) {
         let currentIndex = props.Ids.indexOf(props.data)
         let transaction = await contract.cancellOrder(orderIds[currentIndex], props.data.productId)
         await transaction.wait()
-        alert('Your current order got cancelled Successfully!!!')
+        Swal.fire(
+          'Your current order got cancelled Successfully!!!😇',
+          `come here again, we'll waiting for you🤝`,
+          'success'
+        )
         window.location.replace('/components/Marketplace/HomePage')
       }
     } catch (error) {
@@ -93,13 +91,11 @@ export default function Products(props: any) {
         let deliveryStatus = await contract.delivery(orderIds[currentIndex], props.data.productId, currentAddress)
         let cancellStatus = await contract.orderCancel(orderIds[currentIndex], props.data.productId, currentAddress)
         setCancelled(cancellStatus)
-        console.log("deliveryStatus: ", deliveryStatus)
-        console.log("cancellStatus: ", cancellStatus)
+        // console.log("deliveryStatus: ", deliveryStatus)
+        // console.log("cancellStatus: ", cancellStatus)
         setDelevered(deliveryStatus)
         setClick(false)
-
       }
-
     } catch (error) {
       console.log(error)
     }
@@ -126,12 +122,6 @@ export default function Products(props: any) {
       </span> : <span className='text-xl text-black font-bold'>Thank you for shopping with us😊</span>}
       <div className={styles.rightBox}>
         <div className="w-full flex justify-between items-center">
-
-        {/* <Button variant="contained" onClick={fatchedData} className="bg-blue-700">
-          <RefreshIcon />
-        </Button> */}
-          
-
           {
             !delevered && !cancelled ? 
             <div className="w-96 flex justify-between">
