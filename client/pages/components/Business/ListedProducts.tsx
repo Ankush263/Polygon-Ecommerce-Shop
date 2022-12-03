@@ -27,7 +27,7 @@ function ListedProducts() {
   const [data, updateData] = useState(sampleData)
   const [dataFatched, updateDataFatched] = useState(false)
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const deployAddress = "0xaeBf6b98F358aE5449fABe2Bcb83f1754eE40FdD"
 
   const getItems = async () => {
     try {
@@ -61,7 +61,7 @@ function ListedProducts() {
   
         updateData(items)
         updateDataFatched(true)
-        console.log("items: ", items)
+        // console.log("items: ", items)
       }
 
     } catch (error) {
