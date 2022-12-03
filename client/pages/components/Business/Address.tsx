@@ -3,21 +3,8 @@ import Button from '@mui/material/Button';
 // import ABI from '../../../../../artifacts/contracts/Ecommarce.sol/Ecommarce.json';
 import ABI from '../../../utils/Ecommarce.json';
 import { ethers } from 'ethers';
-import swal from 'sweetalert';
-import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import { GetServerSideProps, GetStaticProps } from 'next';
-
-
-// export const getServerSideProps: GetServerSideProps = async(contex) => {
-
-//   return {
-//     props: {
-//       id: 1,
-//       data: null,
-//     }
-//   }
-
-// }
+import Swal from 'sweetalert2'
+import { GetStaticProps } from 'next';
 
 export const getStaticProps: GetStaticProps = async(contex) => {
 
@@ -34,12 +21,14 @@ export const getStaticProps: GetStaticProps = async(contex) => {
 
 export default function Address(props: any) {
 
+  const deployAddress = "0xaeBf6b98F358aE5449fABe2Bcb83f1754eE40FdD"
+
   const [delevered, setDeleverd] = useState(false)
   const [cancelled, setCancelled] = useState(false)
-
   const [buyerAddress, setBuyerAddress] = useState("")
+  const [location, setLocation] = useState("")
+  const [number, setNumber] = useState("")
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
   const showAddress = async (orderId: any) => {
 
@@ -48,14 +37,26 @@ export default function Address(props: any) {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
         const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
-        console.log(props.id)
-        console.log("orderId: ", orderId)
+        // console.log(props.id)
+        // console.log("orderId: ", orderId)
         let address = await contract.ShowMyCustomersByOrderId(orderId, props.id)
         let deliveryLocation = await contract.deliveryLocation(props.id, address, orderId)
         let productsNumber = await contract.productsNumber(address, props.id, orderId)
-        swal(deliveryLocation, productsNumber.toString())
-        console.log("deliveryLocation: ", deliveryLocation)
-        console.log("productsNumber: ", productsNumber.toString())
+        setLocation(deliveryLocation)
+        setNumber(productsNumber.toString())
+        
+        Swal.fire({
+          title: `Number of items: ${productsNumber}`,
+          text: `Delivery Location: ${deliveryLocation}`,
+          backdrop: `rgba(0,0,123,0.4)`,
+          color: "rgb(225, 225, 225)",
+          background: "#000000",
+          imageWidth: 450,
+          imageHeight: 450,
+          imageAlt: 'Custom image',
+        })
+        // console.log("location: ", location)
+        // console.log("number: ", number)
       }
 
     } catch (error) {
@@ -71,7 +72,7 @@ export default function Address(props: any) {
         const signer = provider.getSigner()
         const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
         let address = await contract.ShowMyCustomersByOrderId(props.data, props.id)
-        console.log("address: ", address)
+        // console.log("address: ", address)
         setBuyerAddress(address)
         let deleveryStatus = await contract.delivery(props.data, props.id, address)
         let cancellStatus = await contract.orderCancel(props.data, props.id, address)
