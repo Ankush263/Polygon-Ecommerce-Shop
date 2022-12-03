@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 import '../../tailwind.config'
 import Link from 'next/link';
+import { ethers } from 'ethers';
 
 
 function WellcomePage() {
@@ -9,19 +10,33 @@ function WellcomePage() {
   const [logedIn, setLogedIn] = useState(false)
 
 
-
   // Connect Wallet functionality-------------------------------------------
 
   const Connect = async () => {
+
     try {
       if (typeof window !== 'undefined') {
-        window.ethereum.request({ method: 'eth_requestAccounts' });
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+        if(chainId != '0x13881') {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x13881' }],
+          })
+        }
+        await window.ethereum.request({ method: 'eth_requestAccounts' })
+        setLogedIn(true)
+        // window.location.replace(location.pathname)
       }
-      setLogedIn(true)
     } catch (error) {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    window.ethereum.on('accountsChanged', (account: any) => {
+      window.location.replace(location.pathname)
+    })
+  }, [])
 
 
   const styles = {
@@ -43,7 +58,6 @@ function WellcomePage() {
             </Button>
           </div>
           <div className={styles.pages}>
-            {/* <Link href="/components/Business/ListProduct"> */}
             <Link href="/components/Business/Home">
               <Button variant="contained" className='bg-gradient-to-r from-sky-500 to-indigo-500' disabled={!logedIn}>
                 <span>Go For Business</span>
@@ -58,7 +72,6 @@ function WellcomePage() {
             </Link>
           </div>
       </div>
-          {/* <img src='/images/ecommerce-logo.png' className='border-8 w-4/12 h-3/6 mr-48 p-0'/> */}
     </div>
   )
 }
