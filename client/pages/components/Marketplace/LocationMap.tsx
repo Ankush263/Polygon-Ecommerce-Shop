@@ -47,8 +47,8 @@ function LocationMap(props: any) {
           >
             {
               props.locations.map((coords: any, i: any) => (
-                <Marker position={coords} onClick={() => props.setHighLight(i)} />
-                // <Marker onClick={() => props.setHighLight(i)} />
+                // <Marker position={coords} onClick={() => props.setHighLight(i)} />
+                <Marker key={i} onClick={() => props.setHighLight(i)} />
               ))
             }
           </Map>
