@@ -2,7 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 require('dotenv').config();
 
-// const PRIVATE_KEY: any = process.env.PRIVATE_KEY;
+const PRIVATE_KEY: any = process.env.PRIVATE_KEY;
 // const RPC_URL: any = process.env.RPC_URL
 
 const config: HardhatUserConfig = {
@@ -13,10 +13,12 @@ const config: HardhatUserConfig = {
     //   accounts: [PRIVATE_KEY]
     // },
     hardhat: {
-      // blockGasLimit: 0x1fffffffffffff,
       chainId: 31337,
-      // allowUnlimitedContractSize: true,
     },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.API_KEY}`,
+      accounts: [PRIVATE_KEY]
+    }
   }
 };
 
