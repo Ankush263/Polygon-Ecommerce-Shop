@@ -21,8 +21,6 @@ contract Ecommarce{
 
   Product[] public products;
 
-//   uint[] public orderId;
-
   mapping(address=>mapping(uint => mapping(uint => uint))) public productsNumber;   // no[address][id][block.timestamp]=numbers
 
   mapping(address => mapping(uint => address[])) public customerById;   // customerById[seller address][itemId] = [customer addresses]
@@ -59,8 +57,9 @@ contract Ecommarce{
     listPrice = 0.01 ether;
     endAt = 7 days;
     priceFeed = AggregatorV3Interface(
-        0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e
+        0x0715A7794a1dc8e42615F059dD6e406A6594651A
     );
+    //0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada (Matic)
   }
 
   function registerProduct(string memory _title, string memory _desc, uint _price, uint _stocks, string memory _img) payable public {
@@ -94,7 +93,6 @@ contract Ecommarce{
   function buy(uint _productId, string memory _deliveryAddress, uint _numberOfProducts) payable public returns(uint) {
 
     require(msg.value == products[_productId-1].price * _numberOfProducts, "Please  pay the exact price");
-    // require(msg.value >= products[_productId-1].price, "Please  pay the exact price");
     require(products[_productId-1].seller != msg.sender, "Seller not be the buyer");
     require(_numberOfProducts > 0, "Please select how many products you want to buy");
     require(_numberOfProducts <= products[_productId-1].stocks, "You reach the product's stock limit");
@@ -106,37 +104,37 @@ contract Ecommarce{
     getItemId[msg.sender][orderId] = _productId;
     allMyOrderIds[msg.sender].push(orderId);
     myCustomers[products[_productId-1].seller] = products[_productId-1].buyer;
-    // customers.push(products[_productId-1].buyer[products[_productId-1].buyer.length-1]);
     customerById[products[_productId-1].seller][_productId] = products[_productId-1].buyer;
     orderIdById[products[_productId-1].seller][_productId].push(orderId);
     customerByOrderId[orderId][_productId] = products[_productId-1].buyer[products[_productId-1].buyer.length-1];
-
     productsNumber[msg.sender][_productId][block.timestamp] = _numberOfProducts;
     products[_productId-1].stocks -= _numberOfProducts;
-
     return block.timestamp;
 
   }
 
   function completeDelivery(uint _orderId, uint _productId) payable public {
+
     require(products[_productId-1].seller != msg.sender, "Only buyer can call this");
     require(orderCancel[_orderId][_productId][msg.sender] == false, "Already Cancelled");
     uint number;
     number = productsNumber[msg.sender][_productId][_orderId];
     (products[_productId-1].seller).transfer(products[_productId-1].price * number);
     delivery[_orderId][_productId][msg.sender] = true;
+
   }
 
   function cancellOrder(uint _orderId, uint _productId) public {
+
     require(msg.sender != manager, "Manager can't cancell the order");
     require(delivery[_orderId][_productId][msg.sender] == false, "Already delivered");
     require(orderCancel[_orderId][_productId][msg.sender] == false, "Already Cancelled");
     uint number;
     number = productsNumber[msg.sender][_productId][_orderId];
-    // return the buyer money(take it to the top for re-enterncy)
     payable(msg.sender).transfer(products[_productId-1].price * number);
     products[_productId-1].stocks += number;
     orderCancel[_orderId][_productId][msg.sender] = true;
+    
   }
 
   function showAllMyOrderIds() public view returns(uint[] memory) {
