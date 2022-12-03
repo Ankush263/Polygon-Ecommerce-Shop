@@ -2,13 +2,13 @@ import { Button } from '@mui/material'
 import { ethers } from 'ethers'
 import React, { useState } from 'react'
 import { uploadFileToIPFS, uploadJSONToIPFS } from '../../api/pinata'
-import NavBar from './NavBarBusiness'
 // import ABI from '../../../../artifacts/contracts/Ecommarce.sol/Ecommarce.json'
 import ABI from '../../../utils/Ecommarce.json'
+import Swal from 'sweetalert2';
 
 function ListProduct() {
 
-  const deployAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const deployAddress = "0xaeBf6b98F358aE5449fABe2Bcb83f1754eE40FdD"
 
   const [uploadImg, setUploadImg] = useState('')
   const [productDesc, setProductDesc] = useState({ title: '', desc: '', price: 0, stock: 0, img: '' })
@@ -19,10 +19,9 @@ function ListProduct() {
     let file = e.target.files[0]
     try {
       const response = await uploadFileToIPFS(file)
-
       if(response.success === true) {
         setUploadImg(response.pinataURL)
-        console.log(response.pinataURL)
+        // console.log(response.pinataURL)
       }
     } catch (error) {
       console.log(error)
@@ -30,13 +29,10 @@ function ListProduct() {
   }
 
   const uploadMetadataToIPFS = async () => {
-
     const { title, desc, price, stock, img } = productDesc
-
     if(!title || !desc || !price || !stock || !img || !uploadImg ) {
       return
     }
-
     const productJSON = {
       title,
       desc,
@@ -45,7 +41,6 @@ function ListProduct() {
       img,
       image: uploadImg
     }
-
     try {
       const response = await uploadJSONToIPFS(productJSON)
       if(response.success === true) {
@@ -57,10 +52,8 @@ function ListProduct() {
   }
 
   const list = async (e: any) => {
-
     setDisabled(true)
     e.preventDefault()
-
     try {
       if(typeof window !== 'undefined') {
         const metadataURL = await uploadMetadataToIPFS()
@@ -68,37 +61,13 @@ function ListProduct() {
         const signer = provider.getSigner()
         const address = await signer.getAddress()
         const contract = new ethers.Contract(deployAddress, ABI.abi, signer)
-  
         setUploadingMessage("Please wait... uploading takes about 1 mins")
-  
         let price = ethers.utils.parseUnits(`${productDesc.price.toString()}`, 'ether')
-        // let price = ethers.utils.parseEther(`${productDesc.price.toString()}`)
-  
-  
-        // const price = productDesc.price.toString()
-  
-        
-        // console.log("wei Price: ", price.toString())
-        console.log("BigNumber : ", price)
-        console.log("Real Price: ", price.toString())
-  
-        console.log("Change: ", ethers.utils.formatEther(price))
-  
-  
-  
-  
-  
-        // let myProducts = await contract.getAllMyListedProducts()
-        // console.log(myProducts[0].price.toString())
-  
-  
-  
-  
-  
-  
+        // console.log("BigNumber : ", price)
+        // console.log("Real Price: ", price.toString())
+        // console.log("Change: ", ethers.utils.formatEther(price))
         let listingPrice = await contract.listPrice()
         listingPrice = listingPrice.toString()
-  
         let transaction = await contract.registerProduct(
           productDesc.title,
           productDesc.desc,
@@ -108,20 +77,21 @@ function ListProduct() {
           { value: listingPrice }
         )
         await transaction.wait()
-        alert("Successfully list your product!!!")
+        Swal.fire(
+          'Successfully list your product🚀🚀🚀',
+          `Wellcome to the Web3-Ecommerce-Family🙏🙏🙏`,
+          'success'
+        )
         setUploadImg('')
         setProductDesc({ title: '', desc: '', price: 0, stock: 0, img: '' })
         setUploadingMessage('')
         setDisabled(false)
         window.location.replace('/components/Marketplace/HomePage')
       }
-
-
     } catch (error) {
       alert("Upload Error: "+error)
       console.log("List Error: ", error)
     }
-
   }
 
   const styles = {
@@ -138,9 +108,6 @@ function ListProduct() {
 
   return (
     <div>
-      {/* <div>
-        <NavBar />
-      </div> */}
       <div className='flex flex-col justify-center items-center'>
         <div className={styles.space}>
           <div className='w-11/12 h-1/6 text-4xl font-black flex flex-col'>
@@ -150,7 +117,7 @@ function ListProduct() {
             </div>
             <div
               className='ml-40 text-teal-900 font-serif'>
-                <span>Here you can list any products with 0.01 eth each</span>
+                <span>Here you can list any products with 0.01 Matic each</span>
             </div>
           </div>
           <div className="w-11/12 h-screen flex justify-around">
