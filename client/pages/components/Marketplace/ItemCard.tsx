@@ -1,23 +1,9 @@
 import { ethers } from 'ethers'
-import { GetServerSideProps, GetStaticProps } from 'next'
+import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import React from 'react'
 
-// export const getServerSideProps: GetServerSideProps = async(contex) => {
-//   return {
-//     props: {
-//       data: {
-//         img: "https://www.domusweb.it/content/dam/domusweb/en/news/2021/05/13/how-to-mint-your-own-nft-in-5-simple-steps/nft.jpg.foto.rbig.jpg",
-//         title: "",
-//         desc: "",
-//         seller: "",
-//         stocks: 0,
-//         price: '8',
-//         id: 1,
-//       }
-//     }
-//   }
-// }
+
 export const getStaticProps: GetStaticProps = async(contex) => {
   return {
     revalidate: 5,
@@ -38,7 +24,7 @@ export const getStaticProps: GetStaticProps = async(contex) => {
 export default function ItemCard(props: any) {
 
   const stocks = () => {
-    console.log(props.data.img)
+    // console.log(props.data.img)
   }
 
   const data = {
@@ -68,13 +54,21 @@ export default function ItemCard(props: any) {
         >
           <img src={props.data.img} onClick={stocks} className={styles.img} />
         </Link>
-        {/* <img src={props.data.img} onClick={stocks} className={styles.img} /> */}
       </div>
-      <span className='text-black text-sm font-semibold'>{props.data.title}</span>
-      <div className="w-full flex justify-center items-center">
+      <div className="flex w-full justify-between">
+        <span className='text-black text-sm font-bold'>{props.data.title}</span>
         <span className='text-black text-sm font-bold'>Stocks: {props.data.stocks ? (props.data.stocks).toString() : ""}</span>
-        <span className='text-black text-sm font-semibold ml-5'>{props.data.price}</span>
-        <img src="/images/eth2.png" className='w-10 m-0 p-0' />
+      </div>
+      <div className="w-full flex justify-between items-center">
+        <div className="flex justify-start">
+          <span className='text-black text-sm font-semibold'>{props.data.price}</span>
+          <img src="/images/polygon.png" className='w-6 ml-2 p-0' />
+        </div>
+        <span className='font-bold text-black'> - </span>
+        <div className="flex justify-end">
+          <span className='text-black text-sm font-semibold'>{(props.data.price * 0.92).toString().slice(0, 6)}</span>
+          <img src="/images/doller.png" className='w-4 ml-2 p-0' />
+        </div>
       </div>
     </div>
   )
