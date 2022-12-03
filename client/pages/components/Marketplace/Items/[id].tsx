@@ -80,7 +80,7 @@ function Id() {
             <span className={styles.desc}>Only {data.stocks} pices left</span>
             <span className={styles.desc}><p className="text-black">Description:</p> {data.desc}</span>
             <span className={styles.desc}><p className="text-black">Owner:</p> {data.seller}</span>
-            <span className={styles.desc}><p className="text-black">Price:</p> {data.price}eth only</span>
+            <span className={styles.desc}><p className="text-black">Price:</p> {data.price} Matic only</span>
             <div className="w-full flex justify-center items-center">
               {
                 data.seller !== myAddress ?
